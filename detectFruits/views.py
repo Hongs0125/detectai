@@ -21,7 +21,8 @@ def detectFruits(request):
         for chunk in image_file.chunks():
             destination.write(chunk)
 
-    ref_counts = {}
+    ref_result = []
+    counts = {}
 
     model = YOLO(os.path.join(BASE_DIR, 'fruitsModel.pt'))
     results = model(image_path, save=True, imgsz=640, conf=0.5,
@@ -31,10 +32,13 @@ def detectFruits(request):
     for r in results:
         for c in r.boxes.cls:
             name = names[int(c)]
-            if name in ref_counts:
-                ref_counts[name] += 1
+            if name in counts:
+                counts[name] += 1
             else:
-                ref_counts[name] = 1
+                counts[name] = 1
+
+    for name, quantity in counts.items():
+        ref_result.append({"name": name, "quantity": quantity})
 
     os.rename(os.path.join(result_file_path, 'predict', 'input.jpg'), os.path.join(result_file_path, 'result.jpg'))
     shutil.rmtree(os.path.join(result_file_path, 'predict'))
@@ -45,4 +49,5 @@ def detectFruits(request):
     os.remove(image_path)
     os.remove(os.path.join(result_file_path, 'result.jpg'))
 
-    return JsonResponse({'counts': ref_counts, 'resultImage': encoded_file})
+    print(ref_result)
+    return JsonResponse({'results': ref_result, 'image': encoded_file})
