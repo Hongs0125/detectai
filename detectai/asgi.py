@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 """
 ASGI config for detectai project.
 

@@ -1,7 +1,8 @@
 from django.urls import path, include
 
-from detectFruits.views import detectFruits
+from detectFruits.views import detectFruits, detectFood
 
 urlpatterns = [
-    path('', detectFruits),
+    path('fruits', detectFruits),
+    path('food', detectFood),
 ]
